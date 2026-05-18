@@ -51,7 +51,7 @@ const TourDetails = () => {
     const fetchTour = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5200/api/tours/${id}`,
+          `https://stb-b-1.onrender.com/api/tours/${id}`,
         );
         setTour(response.data.tour || response.data);
         setLoading(false);
@@ -71,14 +71,14 @@ const TourDetails = () => {
       try {
         // 1. Fetch the Tour (using TR-101)
         const tourRes = await axios.get(
-          `http://localhost:5200/api/tours/${id}`,
+          `https://stb-b-1.onrender.com/api/tours/${id}`,
         );
         const fetchedTour = tourRes.data.tour || tourRes.data;
         setTour(fetchedTour);
 
         // 2. Fetch the Reviews (Using the MongoDB _id of the tour we just got!)
         const reviewsRes = await axios.get(
-          `http://localhost:5200/api/reviews/tour/${fetchedTour._id}`,
+          `https://stb-b-1.onrender.com/api/reviews/tour/${fetchedTour._id}`,
         );
         setReviews(reviewsRes.data);
 
@@ -133,7 +133,7 @@ const TourDetails = () => {
       // ... existing axios request ...
 
       await axios.post(
-        "http://localhost:5200/api/bookings",
+        "https://stb-b-1.onrender.com/api/bookings",
         bookingData,
         config,
       );
