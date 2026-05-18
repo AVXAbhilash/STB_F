@@ -15,7 +15,7 @@ function ForgotPassword() {
 
     try {
       // This route will need to be created on your backend!
-      const { data } = await axios.post("http://localhost:5200/api/users/forgot-password", { email });
+      const { data } = await axios.post("https://stb-b-1.onrender.com/api/users/forgot-password", { email });
       
       setStatus({ type: "success", message: "Password reset link sent! Please check your email." });
       setEmail(""); // Clear the input
