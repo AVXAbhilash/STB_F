@@ -34,7 +34,7 @@ const ManageUsers = () => {
         const token = localStorage.getItem('userToken');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         
-        const { data } = await axios.get('http://localhost:5200/api/users', config);
+        const { data } = await axios.get('https://stb-b-1.onrender.com/api/users', config);
         setUsers(data);
         setIsLoading(false);
       } catch (err) {
@@ -62,7 +62,7 @@ const ManageUsers = () => {
       const token = localStorage.getItem('userToken');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
-      await axios.delete(`http://localhost:5200/api/users/${id}`, config);
+      await axios.delete(`https://stb-b-1.onrender.com/api/users/${id}`, config);
       
       // Remove from UI
       setUsers(users.filter(user => user._id !== id));
@@ -80,7 +80,7 @@ const ManageUsers = () => {
       const token = localStorage.getItem('userToken');
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
-      const { data } = await axios.post('http://localhost:5200/api/users', formData, config);
+      const { data } = await axios.post('https://stb-b-1.onrender.com/api/users', formData, config);
       
       // Add the new user to the UI immediately
       setUsers([...users, data]);
