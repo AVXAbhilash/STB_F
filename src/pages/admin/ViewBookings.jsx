@@ -26,7 +26,7 @@ const ViewBookings = () => {
         const token = localStorage.getItem('userToken');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         
-        const { data } = await axios.get('https://stb-b-1.onrender.com/  api/bookings', config);
+        const { data } = await axios.get('https://stb-b-1.onrender.com/api/bookings', config);
         
         setBookings(data.bookings || []);
         setIsLoading(false);
