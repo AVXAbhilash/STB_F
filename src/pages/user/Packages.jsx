@@ -36,7 +36,7 @@ const Packages = () => {
     const fetchTours = async () => {
       try {
         // Make sure this matches your actual Express route for fetching all tours!
-        const response = await axios.get("http://localhost:5200/api/tours");
+        const response = await axios.get("https://stb-b-1.onrender.com/api/tours");
         
         // Depending on how you wrote your backend, it might be response.data, 
         // or response.data.tours if you sent it as an object. Adjust if necessary!
