@@ -34,7 +34,7 @@ const AdminAccount = () => {
         const token = localStorage.getItem('userToken');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         
-        const { data } = await axios.get('http://localhost:5200/api/users/profile', config);
+        const { data } = await axios.get('https://stb-b-1.onrender.com/api/users/profile', config);
         
         setProfileData({
           firstName: data.firstName || '',
@@ -75,14 +75,14 @@ const AdminAccount = () => {
       };
 
       // 1. Upload the physical file
-      const { data: imagePath } = await axios.post('http://localhost:5200/api/upload', formData, config);
-      const fullImageUrl = `http://localhost:5200${imagePath}`;
+      const { data: imagePath } = await axios.post('https://stb-b-1.onrender.com/api/upload', formData, config);
+      const fullImageUrl = `https://stb-b-1.onrender.com${imagePath}`;
 
       setProfileImage(fullImageUrl);
 
       // 2. Save the new URL to the database profile instantly
       const profileConfig = { headers: { Authorization: `Bearer ${token}` } };
-      await axios.put('http://localhost:5200/api/users/profile', { profileImage: fullImageUrl }, profileConfig);
+      await axios.put('https://stb-b-1.onrender.com/api/users/profile', { profileImage: fullImageUrl }, profileConfig);
 
       setMessage({ type: 'success', text: 'Profile picture updated successfully!' });
 
@@ -106,7 +106,7 @@ const AdminAccount = () => {
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
       // 1. Update Profile Info
-      await axios.put('http://localhost:5200/api/users/profile', profileData, config);
+      await axios.put('https://stb-b-1.onrender.com/api/users/profile', profileData, config);
 
       // 2. Update Password (Only if they typed a new one)
       if (passwords.newPassword) {
@@ -115,7 +115,7 @@ const AdminAccount = () => {
           setSaving(false);
           return;
         }
-        await axios.put('http://localhost:5200/api/users/password', passwords, config);
+        await axios.put('https://stb-b-1.onrender.com/api/users/password', passwords, config);
         // Clear passwords from UI after success
         setPasswords({ currentPassword: '', newPassword: '' }); 
       }
