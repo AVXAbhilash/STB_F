@@ -13,6 +13,9 @@ const Navbar = () => {
     return localStorage.getItem('userProfileImage') || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150";
   });
 
+  // --- NEW: USER DATA STATE ---
+  const [userData, setUserData] = useState({ name: 'User', email: '' });
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -23,6 +26,27 @@ const Navbar = () => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode === 'true' || false;
   });
+
+  // --- NEW: FETCH USER DATA FROM LOCAL STORAGE ---
+  useEffect(() => {
+    const fetchUserData = () => {
+      const storedUser = localStorage.getItem('userInfo');
+      if (storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          setUserData(parsedUser);
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+        }
+      }
+    };
+
+    fetchUserData();
+    
+    // Optional: Update if profile changes elsewhere
+    window.addEventListener('profileUpdated', fetchUserData);
+    return () => window.removeEventListener('profileUpdated', fetchUserData);
+  }, []);
 
   // Listener to update Navbar image when changed on Profile page
   useEffect(() => {
@@ -127,14 +151,18 @@ const Navbar = () => {
             {isAuthenticated ? (
               <div className="relative">
                 <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center focus:outline-none ring-2 ring-transparent hover:ring-primary-500 rounded-full transition-all">
-                  {/* FIX: Syncs with Nav State Image */}
                   <img src={navProfileImage} alt="User Profile" className="w-10 h-10 rounded-full object-cover border-2 border-white dark:border-slate-800 shadow-md" />
                 </button>
                 
                 <div className={`absolute right-0 mt-3 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-gray-100 dark:border-slate-800 overflow-hidden transition-all origin-top-right ${isProfileOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
+                  {/* --- NEW: DYNAMIC USER DATA --- */}
                   <div className="px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800">
-                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate">John Doe</p>
-                    <p className="text-xs font-medium text-slate-500 truncate">john@example.com</p>
+                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate capitalize">
+                      {userData?.name || 'User'}
+                    </p>
+                    <p className="text-xs font-medium text-slate-500 truncate">
+                      {userData?.email || ''}
+                    </p>
                   </div>
                   <div className="p-2">
                     <Link to="/profile" onClick={() => setIsProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-700 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-colors">
