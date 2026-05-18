@@ -14,10 +14,15 @@ const ViewBookings = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // --- NEW: CUSTOM REFUND ACTION MODAL STATES ---
+  // --- REFUND ACTION MODAL STATES ---
   const [refundPrompt, setRefundPrompt] = useState({ isOpen: false, bookingId: null });
   const [refundState, setRefundState] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
   const [refundMessage, setRefundMessage] = useState('');
+
+  // --- NEW: COMPLETE ACTION MODAL STATES ---
+  const [completePrompt, setCompletePrompt] = useState({ isOpen: false, bookingId: null });
+  const [completeState, setCompleteState] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+  const [completeMessage, setCompleteMessage] = useState('');
 
   // --- FETCH BOOKINGS ON LOAD ---
   useEffect(() => {
@@ -50,7 +55,7 @@ const ViewBookings = () => {
     setTimeout(() => setSelectedBooking(null), 300);
   };
 
-  // --- NEW: REFUND WORKFLOW HANDLERS ---
+  // --- REFUND WORKFLOW HANDLERS ---
   const triggerRefundProcess = (id) => {
     setRefundState('idle');
     setRefundPrompt({ isOpen: true, bookingId: id });
@@ -65,15 +70,12 @@ const ViewBookings = () => {
       
       const { data } = await axios.patch(`https://stb-b-1.onrender.com/api/bookings/${refundPrompt.bookingId}/process-refund`, {}, config);
       
-      // Update UI Data
       setBookings(bookings.map(b => b._id === refundPrompt.bookingId ? data.booking : b));
       setSelectedBooking(data.booking); 
       
-      // Show Success UI
       setRefundState('success');
       setRefundMessage('Refund has been successfully logged as completed.');
     } catch (err) {
-      // Show Error UI
       setRefundState('error');
       setRefundMessage(err.response?.data?.message || "An error occurred while processing the refund.");
     }
@@ -82,6 +84,38 @@ const ViewBookings = () => {
   const closeRefundPrompt = () => {
     setRefundPrompt({ isOpen: false, bookingId: null });
     setTimeout(() => setRefundState('idle'), 300);
+  };
+
+  // --- NEW: COMPLETE WORKFLOW HANDLERS ---
+  const triggerCompleteProcess = (id) => {
+    setCompleteState('idle');
+    setCompletePrompt({ isOpen: true, bookingId: id });
+  };
+
+  const executeCompleteProcess = async () => {
+    setCompleteState('loading');
+    
+    try {
+      const token = localStorage.getItem('userToken');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      
+      // Update this URL to match your backend complete route!
+      const { data } = await axios.patch(`https://stb-b-1.onrender.com/api/bookings/${completePrompt.bookingId}/complete`, {}, config);
+      
+      setBookings(bookings.map(b => b._id === completePrompt.bookingId ? data.booking : b));
+      setSelectedBooking(data.booking); 
+      
+      setCompleteState('success');
+      setCompleteMessage('Booking has been successfully marked as completed.');
+    } catch (err) {
+      setCompleteState('error');
+      setCompleteMessage(err.response?.data?.message || "An error occurred while completing the booking.");
+    }
+  };
+
+  const closeCompletePrompt = () => {
+    setCompletePrompt({ isOpen: false, bookingId: null });
+    setTimeout(() => setCompleteState('idle'), 300);
   };
 
   // --- SEARCH FILTER LOGIC ---
@@ -333,6 +367,24 @@ const ViewBookings = () => {
                     </div>
                   )}
 
+                  {/* --- NEW: INLINE COMPLETE ACTION BAR --- */}
+                  {selectedBooking.status === 'Upcoming' && (
+                    <div className="mt-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-emerald-500/20 rounded-lg text-emerald-400">
+                          <CheckCircle size={20} />
+                        </div>
+                        <p className="text-sm font-bold text-emerald-200">This tour is upcoming. You can mark it as completed.</p>
+                      </div>
+                      <button 
+                        onClick={() => triggerCompleteProcess(selectedBooking._id)}
+                        className="w-full md:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl transition-all shadow-lg shadow-emerald-900/20 active:scale-95 text-sm"
+                      >
+                        Mark as Completed
+                      </button>
+                    </div>
+                  )}
+
                 </div>
               </div>
             </div>
@@ -350,12 +402,11 @@ const ViewBookings = () => {
         </div>
       )}
 
-      {/* --- NEW: CUSTOM REFUND ACTION OVERLAY (z-[60]) --- */}
+      {/* --- REFUND ACTION OVERLAY (z-[60]) --- */}
       {refundPrompt.isOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md transition-opacity">
           <div className="bg-slate-900 rounded-[2rem] w-full max-w-sm shadow-2xl border border-slate-700/50 p-8 text-center transform transition-all">
             
-            {/* IDLE / CONFIRMATION STATE */}
             {refundState === 'idle' && (
               <>
                 <div className="w-16 h-16 bg-orange-500/10 text-orange-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-orange-500/20">
@@ -382,7 +433,6 @@ const ViewBookings = () => {
               </>
             )}
 
-            {/* LOADING STATE */}
             {refundState === 'loading' && (
               <div className="py-8">
                 <Loader className="animate-spin mx-auto mb-4 text-orange-500" size={48} />
@@ -390,7 +440,6 @@ const ViewBookings = () => {
               </div>
             )}
 
-            {/* SUCCESS STATE */}
             {refundState === 'success' && (
               <>
                 <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
@@ -407,7 +456,6 @@ const ViewBookings = () => {
               </>
             )}
 
-            {/* ERROR STATE */}
             {refundState === 'error' && (
               <>
                 <div className="w-20 h-20 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/20">
@@ -417,6 +465,80 @@ const ViewBookings = () => {
                 <p className="text-slate-400 font-medium mb-8">{refundMessage}</p>
                 <button 
                   onClick={closeRefundPrompt} 
+                  className="w-full px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors"
+                >
+                  Close
+                </button>
+              </>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* --- NEW: COMPLETE ACTION OVERLAY (z-[60]) --- */}
+      {completePrompt.isOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md transition-opacity">
+          <div className="bg-slate-900 rounded-[2rem] w-full max-w-sm shadow-2xl border border-slate-700/50 p-8 text-center transform transition-all">
+            
+            {completeState === 'idle' && (
+              <>
+                <div className="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
+                  <CheckCircle size={32} />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2">Mark as Completed?</h3>
+                <p className="text-slate-400 font-medium mb-8 leading-relaxed">
+                  Has the customer finished this tour? This will change the booking status to Completed.
+                </p>
+                <div className="flex flex-col gap-3">
+                  <button 
+                    onClick={executeCompleteProcess} 
+                    className="w-full px-4 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-900/20"
+                  >
+                    Yes, Mark as Completed
+                  </button>
+                  <button 
+                    onClick={closeCompletePrompt} 
+                    className="w-full px-4 py-3.5 bg-slate-800 text-slate-300 font-bold rounded-xl hover:bg-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            )}
+
+            {completeState === 'loading' && (
+              <div className="py-8">
+                <Loader className="animate-spin mx-auto mb-4 text-emerald-500" size={48} />
+                <h3 className="text-xl font-black text-white">Updating System...</h3>
+              </div>
+            )}
+
+            {completeState === 'success' && (
+              <>
+                <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
+                  <CheckCircle size={40} />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2">Tour Completed</h3>
+                <p className="text-slate-400 font-medium mb-8">{completeMessage}</p>
+                <button 
+                  onClick={closeCompletePrompt} 
+                  className="w-full px-4 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-900/20"
+                >
+                  Done
+                </button>
+              </>
+            )}
+
+            {completeState === 'error' && (
+              <>
+                <div className="w-20 h-20 bg-red-500/10 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/20">
+                  <XCircle size={40} />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-2">Action Failed</h3>
+                <p className="text-slate-400 font-medium mb-8">{completeMessage}</p>
+                <button 
+                  onClick={closeCompletePrompt} 
                   className="w-full px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors"
                 >
                   Close
