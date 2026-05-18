@@ -34,7 +34,7 @@ const ManageTours = () => {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const response = await axios.get('http://localhost:5200/api/tours');
+        const response = await axios.get('https://stb-b-1.onrender.com/api/tours');
         setTours(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -71,7 +71,7 @@ const ManageTours = () => {
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
       // Assumes your backend delete route expects the MongoDB _id
-      await axios.delete(`http://localhost:5200/api/tours/${tourToDelete._id}`, config);
+      await axios.delete(`https://stb-b-1.onrender.com/api/tours/${tourToDelete._id}`, config);
       
       setTours(tours.filter(t => t._id !== tourToDelete._id));
       setIsDeleteModalOpen(false);
@@ -96,12 +96,12 @@ const ManageTours = () => {
         delete payload._id; 
         delete payload.tourId; 
 
-        const { data } = await axios.post('http://localhost:5200/api/tours', payload, config);
+        const { data } = await axios.post('https://stb-b-1.onrender.com/api/tours', payload, config);
         setTours([...tours, data]); // Add the newly created tour to the UI
 
       } else {
         // EDIT MODE: We set up your backend to use tourId (e.g. TR-101) for PUT requests!
-        const { data } = await axios.put(`http://localhost:5200/api/tours/${formData.tourId}`, formData, config);
+        const { data } = await axios.put(`https://stb-b-1.onrender.com/api/tours/${formData.tourId}`, formData, config);
         
         // Your backend returns { message: "...", tour: updatedTour }
         const updatedTour = data.tour;
