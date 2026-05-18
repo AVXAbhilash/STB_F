@@ -44,8 +44,8 @@ const BookingHistory = () => {
         
         // Fetch BOTH bookings and reviews at the same time to see what's already reviewed!
         const [bookingsRes, reviewsRes] = await Promise.all([
-          axios.get('http://localhost:5200/api/bookings/mybookings', config),
-          axios.get('http://localhost:5200/api/reviews/myreviews', config).catch(() => ({ data: [] }))
+          axios.get('https://stb-b-1.onrender.com/api/bookings/mybookings', config),
+          axios.get('https://stb-b-1.onrender.com/api/reviews/myreviews', config).catch(() => ({ data: [] }))
         ]);
 
         setBookings(bookingsRes.data);
@@ -92,7 +92,7 @@ const BookingHistory = () => {
       const token = localStorage.getItem('userToken');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
-      await axios.post('http://localhost:5200/api/reviews', {
+      await axios.post('https://stb-b-1.onrender.com/api/reviews', {
         tour: selectedBooking.tour._id,
         rating: rating,
         reviewText: reviewText
@@ -124,7 +124,7 @@ const BookingHistory = () => {
       const token = localStorage.getItem('userToken');
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
-      await axios.put(`http://localhost:5200/api/bookings/${bookingToCancel._id}`, {
+      await axios.put(`https://stb-b-1.onrender.com/api/bookings/${bookingToCancel._id}`, {
         status: 'Cancelled'
       }, config);
 
@@ -158,7 +158,7 @@ const BookingHistory = () => {
       const token = localStorage.getItem('userToken');
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
-      await axios.put(`http://localhost:5200/api/bookings/${bookingToRefund._id}`, {
+      await axios.put(`https://stb-b-1.onrender.com/api/bookings/${bookingToRefund._id}`, {
         refundDetails: refundData 
       }, config);
 
