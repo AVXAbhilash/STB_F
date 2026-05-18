@@ -16,7 +16,7 @@ const ManageReviews = () => {
         const token = localStorage.getItem('userToken');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         
-        const { data } = await axios.get('http://localhost:5200/api/reviews', config);
+        const { data } = await axios.get('https://stb-b-1.onrender.com/api/reviews', config);
         
         // --- THE FIX IS HERE ---
         // If your backend wraps the array in 'data.reviews', use that. 
@@ -41,7 +41,7 @@ const ManageReviews = () => {
       const token = localStorage.getItem('userToken');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       
-      await axios.delete(`http://localhost:5200/api/reviews/${id}`, config);
+      await axios.delete(`https://stb-b-1.onrender.com/api/reviews/${id}`, config);
       
       // Instantly remove the deleted review from the UI
       setReviews(reviews.filter((review) => review._id !== id));
