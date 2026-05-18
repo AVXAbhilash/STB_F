@@ -55,14 +55,14 @@ const Profile = () => {
 
         // Fetch Profile and Bookings at the exact same time for better performance
         const [profileRes, bookingsRes] = await Promise.all([
-          axios.get("http://localhost:5200/api/users/profile", config),
-          axios.get("http://localhost:5200/api/bookings/mybookings", config)
+          axios.get("https://stb-b-1.onrender.com/api/users/profile", config),
+          axios.get("https://stb-b-1.onrender.com/api/bookings/mybookings", config)
         ]);
 
         // Attempt to fetch reviews (Wrapped in try/catch just in case the backend route isn't ready)
         let fetchedReviewCount = 0;
         try {
-          const reviewsRes = await axios.get("http://localhost:5200/api/reviews/myreviews", config);
+          const reviewsRes = await axios.get("https://stb-b-1.onrender.com/api/reviews/myreviews", config);
           fetchedReviewCount = reviewsRes.data.length;
         } catch (err) {
           console.warn("Could not fetch reviews. Route might be missing on backend.");
@@ -124,12 +124,12 @@ const Profile = () => {
       };
 
       const { data: imagePath } = await axios.post(
-        "http://localhost:5200/api/upload",
+        "https://stb-b-1.onrender.com/api/upload",
         formData,
         config,
       );
 
-      const fullImageUrl = `http://localhost:5200${imagePath}`;
+      const fullImageUrl = `https://stb-b-1.onrender.com${imagePath}`;
 
       setProfileImage(fullImageUrl);
       localStorage.setItem("userProfileImage", fullImageUrl);
@@ -137,7 +137,7 @@ const Profile = () => {
 
       const profileConfig = { headers: { Authorization: `Bearer ${token}` } };
       await axios.put(
-        "http://localhost:5200/api/users/profile",
+        "https://stb-b-1.onrender.com/api/users/profile",
         { profileImage: fullImageUrl },
         profileConfig,
       );
@@ -160,7 +160,7 @@ const Profile = () => {
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
       const response = await axios.put(
-        "http://localhost:5200/api/users/profile",
+        "https://stb-b-1.onrender.com/api/users/profile",
         profileData,
         config,
       );
@@ -195,7 +195,7 @@ const Profile = () => {
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
       await axios.put(
-        "http://localhost:5200/api/users/password",
+        "https://stb-b-1.onrender.com/api/users/password",
         {
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
