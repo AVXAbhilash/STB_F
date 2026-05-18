@@ -29,7 +29,7 @@ function ResetPassword() {
 
     try {
       // Hits the route: PUT /api/users/reset-password/:token
-      const { data } = await axios.put(`http://localhost:5200/api/users/reset-password/${token}`, {
+      const { data } = await axios.put(`https://stb-b-1.onrender.com/api/users/reset-password/${token}`, {
         password,
       });
 
