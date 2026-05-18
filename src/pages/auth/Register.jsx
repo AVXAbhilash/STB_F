@@ -35,7 +35,7 @@ const Register = () => {
 
     try {
       // 4. Send the request to your Express backend
-      const response = await axios.post('http://localhost:5200/api/users/register', {
+      const response = await axios.post('https://stb-b-1.onrender.com/api/users/register', {
         firstName,
         lastName,
         email: formData.email,
