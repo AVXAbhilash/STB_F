@@ -48,9 +48,9 @@ const AdminDashboard = () => {
 
         // Fetch everything simultaneously for maximum speed
         const [bookingsRes, usersRes, toursRes] = await Promise.all([
-          axios.get("http://localhost:5200/api/bookings", config),
-          axios.get("http://localhost:5200/api/users", config),
-          axios.get("http://localhost:5200/api/tours", config) // Assumes public route doesn't need token, but safe to pass
+          axios.get("https://stb-b-1.onrender.com/api/bookings", config),
+          axios.get("https://stb-b-1.onrender.com/api/users", config),
+          axios.get("https://stb-b-1.onrender.com/api/tours", config) // Assumes public route doesn't need token, but safe to pass
         ]);
 
         const allBookings = bookingsRes.data.bookings || [];
