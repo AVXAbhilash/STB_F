@@ -63,7 +63,7 @@ const Home = () => {
   useEffect(() => {
     const getTours = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5200/api/tours");
+        const { data } = await axios.get("https://stb-b-1.onrender.com/api/tours");
         setTours(data);
         setLoadingTours(false);
       } catch (error) {
